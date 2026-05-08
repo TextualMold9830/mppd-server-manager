@@ -3,10 +3,7 @@ on:
   push:
     branches:
       - main
-    tags:
-      - 'v*'
   workflow_dispatch:
-
 
 jobs:
   build:
@@ -33,15 +30,23 @@ jobs:
       - name: Build with Maven
         run: mvn clean package -DskipTests
         
+      - name: Prepare Package Input and Module Path
+        run: |
+          mkdir -p target/package
+          cp target/mppd-server-manager-1.0-SNAPSHOT.jar target/package/
+          mvn dependency:copy-dependencies -DoutputDirectory=target/module-path
+        
       - name: Create Native Installer
         run: |
           jpackage --name "MPPDServerManager" \
-            --input target/ \
+            --input target/package \
             --main-jar mppd-server-manager-1.0-SNAPSHOT.jar \
             --main-class textualmold9830.mppd.Main \
             --type ${{ matrix.installer }} \
             --dest target/installer \
-            --compress 2
+            --module-path target/module-path \
+            --add-modules javafx.controls,javafx.fxml,java.sql,java.desktop,java.logging,java.xml \
+            --jlink-options "--strip-debug --no-man-pages --no-header-files --compress zip-9"
 
       - name: Upload Installer
         uses: actions/upload-artifact@v4
