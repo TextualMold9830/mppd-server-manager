@@ -75,6 +75,7 @@ public class MarketplaceTab extends Tab {
                 loadMarketplace(logArea, statusArea);
             }
         });
+        loadMarketplace(logArea, statusArea);
     }
 
     private void loadMarketplace(LogArea logArea, StatusArea statusArea) {
