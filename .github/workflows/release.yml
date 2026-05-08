@@ -37,16 +37,7 @@ jobs:
           mvn dependency:copy-dependencies -DoutputDirectory=target/module-path
         
       - name: Create Native Installer
-        run: |
-          jpackage --name "MPPDServerManager" \
-            --input target/package \
-            --main-jar mppd-server-manager-1.0-SNAPSHOT.jar \
-            --main-class textualmold9830.mppd.Main \
-            --type ${{ matrix.installer }} \
-            --dest target/installer \
-            --module-path target/module-path \
-            --add-modules javafx.controls,javafx.fxml,java.sql,java.desktop,java.logging,java.xml \
-            --jlink-options "--strip-debug --no-man-pages --no-header-files --compress zip-9"
+        run: jpackage --name "MPPDServerManager" --input target/package --main-jar mppd-server-manager-1.0-SNAPSHOT.jar --main-class textualmold9830.mppd.Main --type ${{ matrix.installer }} --dest target/installer --module-path target/module-path --add-modules javafx.controls,javafx.fxml,java.sql,java.desktop,java.logging,java.xml --jlink-options "--strip-debug --no-man-pages --no-header-files --compress zip-9"
 
       - name: Upload Installer
         uses: actions/upload-artifact@v4
