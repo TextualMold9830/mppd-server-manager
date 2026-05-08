@@ -6,7 +6,7 @@ on:
     tags:
       - 'v*'
   workflow_dispatch:
-    
+
 
 jobs:
   build:
@@ -41,7 +41,6 @@ jobs:
             --main-class textualmold9830.mppd.Main \
             --type ${{ matrix.installer }} \
             --dest target/installer \
-            --strip-debug \
             --compress 2
 
       - name: Upload Installer
