@@ -1,0 +1,63 @@
+name: Release
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    name: Build Native Package
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            installer: deb
+          - os: windows-latest
+            installer: msi
+          - os: macos-latest
+            installer: dmg
+    
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          
+      - name: Build with Maven
+        run: mvn clean package -DskipTests
+        
+      - name: Create Native Installer
+        run: |
+          jpackage --name "MPPDServerManager" \
+            --input target/ \
+            --main-jar mppd-server-manager-1.0-SNAPSHOT.jar \
+            --main-class textualmold9830.mppd.Main \
+            --type ${{ matrix.installer }} \
+            --dest target/installer \
+            --strip-debug \
+            --compress 2
+
+      - name: Upload Installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: MPPDServerManager-${{ matrix.os }}
+          path: target/installer/*
+
+  release:
+    name: Create GitHub Release
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            artifacts/*/*
