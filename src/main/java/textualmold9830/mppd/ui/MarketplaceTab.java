@@ -56,7 +56,7 @@ public class MarketplaceTab extends Tab {
             if (item != null) {
                 if (!item.trusted) {
                     Alert alert = new Alert(Alert.AlertType.WARNING, 
-                        "This plugin is from an untrusted developer. Proceed with caution.", 
+                        "This plugin does not come from a trusted developer. Proceed with caution.",
                         ButtonType.YES, ButtonType.NO);
                     alert.setTitle("Security Warning");
                     if (alert.showAndWait().orElse(ButtonType.NO) == ButtonType.NO) return;
